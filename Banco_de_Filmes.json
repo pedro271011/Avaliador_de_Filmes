@@ -1,0 +1,22 @@
+[
+    {
+        "nome": "Filme 1",
+        "ano": 2024,
+        "nota": 1
+    },
+    {
+        "nome": "Filme 2",
+        "ano": 2023,
+        "nota": 3
+    },
+    {
+        "nome": "Batmam",
+        "ano": "2005",
+        "nota": 3.5
+    },
+    {
+        "nome": "A vida",
+        "ano": "2003",
+        "nota": "4"
+    }
+]
