@@ -1,6 +1,7 @@
 from subprocess import Popen
 import json
 import tkinter as tk
+from tkinter import messagebox
 
 class Usuario:
     def __init__(self, nome, email, filmesAssistidos):
@@ -58,6 +59,7 @@ class Filme:
 
     def exibir(self):
 
+
         
         janela_filme = tk.Toplevel()
         janela_filme.title(f'{self.nome}')
@@ -71,49 +73,76 @@ class Filme:
         nota = tk.Label(janela_filme,text= f'Nota: {self.nota}')
         nota.grid(column=1, row =4)
 
+        Botao_avaliar = tk.Button(janela_filme, text='Avaliar', command= lambda: avaliar(janela_filme))
+        Botao_avaliar.grid(column=1, row=5)
+
         Botao_voltar = tk.Button(janela_filme, text ='Voltar',command = janela_filme.destroy)
-        Botao_voltar.grid(column=4, row=8)
+        Botao_voltar.grid(column=4, row=9)
 
         janela_filme.mainloop
-       
 
-    def avaliar(self):
-
-        notau = input("Digite sua nota:")
-
-        try:
-
-            notau = float(notau)
-            self.nota = float(self.nota)
-
-            if notau > 5 or notau < 1:
-
-                print("A nota precisa ser um valor entre 1 e 5")
-            
-            else:
+        def avaliar(janela_filme):
                 
-                if self.nota == 0:
-                    self.nota = notau
+                instrucao1 = tk.Label(janela_filme, text ="Escolha uma nota entre 0 e 5")
+                instrucao1.grid(column=1, row=6)
 
-                self.nota = (self.nota + notau) / 2
+                campo_avaliacao = tk.Entry(janela_filme, width=25)
+                campo_avaliacao.grid(column=1, row = 7)
 
-                with open("Banco_de_Filmes.json", "r") as file:
-                    lista = json.load(file)
+                Botao_confirmar = tk.Button(janela_filme, text="Confirmar", command=lambda: verificacao())
+                Botao_confirmar.grid(column=1, row =8)
+               
 
-                novo_banco = [filme for filme in lista if filme["nome"] != self.nome]
-                novo_banco.append({"nome": self.nome, "ano": self.ano, "nota": self.nota})
+                def verificacao():
 
-                with open("Banco_de_Filmes.json", 'w') as file:
-                    json.dump(novo_banco, file, indent = 4)
+                            notau = campo_avaliacao.get()
+                            instrucao1.destroy
+                            campo_avaliacao.destroy
+                            Botao_confirmar.destroy
+                        
 
-                print( f'A nova nota de {self.nome} é {self.nota}.\n')
-                
+                            try:
+
+                                notau = float(notau)
+                                self.nota = float(self.nota)
+
+                                if notau > 5 or notau < 1:
+
+                                    messagebox.showerror("Erro", "A nota precisa ser um valor entre 1 e 5")
+                                    return
+                                
+                                else:
+                                    
+                                    self.qtdAvaliacoes = self.qtdAvaliacoes + 1
+
+                                    if self.nota == 0:
+                                        self.nota = notau
+
+                                    self.nota = (self.nota * (self.qtdAvaliacoes - 1) + notau) / self.qtdAvaliacoes
+
+                                    with open("Banco_de_Filmes.json", "r") as file:
+                                        lista = json.load(file)
+
+                                    novo_banco = [filme for filme in lista if filme["nome"] != self.nome]
+                                    novo_banco.append({"nome": self.nome, "ano": self.ano, "nota": self.nota})
+
+                                    with open("Banco_de_Filmes.json", 'w') as file:
+                                        json.dump(novo_banco, file, indent = 4)
+
+                                    messagebox.showinfo( 'Aviso',f'A nova nota de {self.nome} é {self.nota}.\n')
+                                    
+                                    return
+
+                            except ValueError:
+                                messagebox.showerror("A nota precisa ser um número")
+
                 return
 
-        except ValueError:
-            print("A nota precisa ser um número")
+        
+                        
+  
 
-        return
+        
     
     
 

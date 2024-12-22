@@ -17,6 +17,11 @@
     {
         "nome": "A vida",
         "ano": "2003",
-        "nota": "4"
+        "nota": 2.8
+    },
+    {
+        "nome": "Duna",
+        "ano": "2024",
+        "nota": 1.0
     }
 ]

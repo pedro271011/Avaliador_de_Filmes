@@ -1,4 +1,3 @@
-
 from Classe import Usuario
 from Classe import Filme
 from Classe import BancoDeDados
@@ -15,14 +14,7 @@ def cadastro():
 
                 nome = campo_cadastro1.get()
                 ano = campo_cadastro2.get()
-                nota = campo_cadastro3.get()
-
-                #try:
-                 #       nome = str(nome)
-                 #       ano = int(ano)
-                #        nota = float(nota)
-
-               # except:
+                nota = campo_cadastro3.get()    
 
                 
                 nome = Filme(nome, ano, nota)
@@ -63,7 +55,7 @@ def cadastro():
         blocos.append(campo_cadastro2)
 
 
-        instrucao3= tk.Label(janela_cadastro, text= "Qual nota vc daria para este filme")
+        instrucao3= tk.Label(janela_cadastro, text= "Qual nota vc escolheria para este filme")
         instrucao3.grid(column=2,  row = 6)
         blocos.append(instrucao3)
 
@@ -116,11 +108,6 @@ def pesquisar():
         else:
                 procura.exibir()
 
-                teste  = input("Deseja avaliar este título?\nSim(s)     Não(n)\n") 
-
-                if teste.lower() == "s":
-                        
-                        Filme.avaliar(procura)
 
 
 janela = tk.Tk()
