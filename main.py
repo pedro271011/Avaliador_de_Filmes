@@ -2,77 +2,76 @@ from Classe import Usuario
 from Classe import Filme
 from Classe import BancoDeDados
 import tkinter as tk
+from tkinter import messagebox
 
 banco = BancoDeDados()
+banco_de_usuarios = BancoDeDados()
 
 
 
+def cadastro(tipo, banco):
+    def criar_objeto():
+        if tipo == "usuario":
+            nome = campo_nome.get().strip()
 
-def cadastro():
+            if not nome:
+                messagebox.showerror("Erro", "O campo 'nome' não pode estar vazio.")
+                return
 
-        def criar_objeto():
+            usuario = Usuario(nome, [])
+            banco.salvar(usuario, "usuario")
 
-                nome = campo_cadastro1.get()
-                ano = campo_cadastro2.get()
-                nota = campo_cadastro3.get()    
+            messagebox.showinfo("Sucesso", "Usuário cadastrado!")
+            janela_cadastro.destroy()
 
-                
-                nome = Filme(nome, ano, nota)
-                banco.salvar(nome)
+        elif tipo == "filme":
+            nome = campo_nome.get().strip()
+            ano = campo_ano.get().strip()
+            nota = campo_nota.get().strip()
 
-                for bloco in blocos:
-                        bloco.destroy()
-                blocos.clear()
+            # Validações básicas
+            if not nome or not ano or not nota:
+                messagebox.showerror("Erro", "Todos os campos devem ser preenchidos.")
+                return
 
-                aviso = tk.Label(janela_cadastro, text='Filme cadastrado com sucesso')
-                aviso.grid(column=2, row= 3)
+            try:
+                ano = int(ano)
+                nota = float(nota)
+            except ValueError:
+                messagebox.showerror("Erro", "Ano deve ser um número")
+                return
 
-                voltar = tk.Button(janela_cadastro, width= 10, command= janela_cadastro.destroy)
-                voltar.grid(column=2, row = 5)
+            filme = Filme(nome, ano, nota)
+            banco.salvar(filme, "filme")
 
-        
-        janela_cadastro = tk.Toplevel()
-        janela_cadastro.title('Cadastro')
+            messagebox.showinfo("Sucesso", "Filme cadastrado!")
+            janela_cadastro.destroy()
 
-        blocos = []
-        
+    # Janela de cadastro
+    janela_cadastro = tk.Toplevel()
+    janela_cadastro.title("Cadastro")
 
-        instrucao1= tk.Label(janela_cadastro, text= "Digite o nome do Filme:")
-        instrucao1.grid(column=2,  row = 0)
-        blocos.append(instrucao1)
+    # Nome
+    tk.Label(janela_cadastro, text="Nome:").grid(column=0, row=0, padx=10, pady=5, sticky="w")
+    campo_nome = tk.Entry(janela_cadastro, width=30)
+    campo_nome.grid(column=1, row=0, padx=10, pady=5)
 
-        campo_cadastro1 = tk.Entry(janela_cadastro, width=30)
-        campo_cadastro1.grid(column=2, row= 1)
-        blocos.append(campo_cadastro1)
+    if tipo == "filme":
+        # Ano
+        tk.Label(janela_cadastro, text="Ano:").grid(column=0, row=1, padx=10, pady=5, sticky="w")
+        campo_ano = tk.Entry(janela_cadastro, width=30)
+        campo_ano.grid(column=1, row=1, padx=10, pady=5)
 
+        # Nota
+        tk.Label(janela_cadastro, text="Nota:").grid(column=0, row=2, padx=10, pady=5, sticky="w")
+        campo_nota = tk.Entry(janela_cadastro, width=30)
+        campo_nota.grid(column=1, row=2, padx=10, pady=5)
 
-        instrucao2= tk.Label(janela_cadastro, text= "Digite o ano do Filme:")
-        instrucao2.grid(column=2,  row = 3)
-        blocos.append(instrucao2)
+   
+    botao_cadastrar = tk.Button(janela_cadastro, text="Cadastrar", command=criar_objeto)
+    botao_cadastrar.grid(column=0, row=3, columnspan=2, pady=10)
 
-        campo_cadastro2 = tk.Entry(janela_cadastro, width=30)
-        campo_cadastro2.grid(column=2, row= 4)
-        blocos.append(campo_cadastro2)
-
-
-        instrucao3= tk.Label(janela_cadastro, text= "Qual nota vc escolheria para este filme")
-        instrucao3.grid(column=2,  row = 6)
-        blocos.append(instrucao3)
-
-        campo_cadastro3 = tk.Entry(janela_cadastro, width=30)
-        campo_cadastro3.grid(column=2, row= 7)
-        blocos.append(campo_cadastro3)
-
-        Botao_cadastro3 = tk.Button(janela_cadastro, command= criar_objeto)
-        Botao_cadastro3.grid(column=2, row = 8)
-        blocos.append(Botao_cadastro3) 
-
-        
-        
-
-        janela_cadastro.mainloop()
-
-
+    janela_cadastro.mainloop()
 
 def pesquisar():
 
@@ -86,28 +85,27 @@ def pesquisar():
                 exit()
 
 
-        procura = next((filme for filme in banco.dados if filme == pesquisa), None)
+        procura = next((filme for filme in banco.filmes if filme == pesquisa), None)
 
         if procura is None:
                         
-                
-                texto_aviso = tk.Label(janela, text = f'O filme {pesquisa} não foi encontrado.')
-                texto_aviso.grid(column= 2, row = 2)
-
-                texto_pergunta = tk.Label(janela, text = 'Deseja cadastrar um Filme?')
-                texto_pergunta.grid(column= 2, row = 3)
-
-                botao_cadastro = tk.Button(janela, text = 'Sim', command = cadastro)
-                botao_cadastro.grid(column= 1, row = 4)
-
-                #Criar uma função de retorno para a Busca, Talvez fechar e abrir a janela
-                botao_cadastro2 = tk.Button(janela, text = 'Não', command = cadastro)
-                botao_cadastro2.grid(column= 3, row = 4)
-
+                messagebox.showinfo("Não encotrado", "O filme não foi encontrado. Cadastre esse filme!")
                         
         else:
                 procura.exibir()
 
+janela_login = tk.Tk()
+
+orientacao = tk.Label(janela_login, text= "Seja bem vindo!")
+orientacao.grid(column=2, row= 2)
+
+botao_entrar = tk.Button(janela_login, text= "Entrar", command= Usuario.verificacao())
+botao_entrar.grid(column=2, row=4)
+
+botao_registro = tk.Button(janela_login, text= "criar nova conta", command=lambda: cadastro("usuario", banco_de_usuarios))
+botao_registro.grid(column=2, row= 6)
+
+janela_login.mainloop
 
 
 janela = tk.Tk()
@@ -120,6 +118,9 @@ campo_pesquisa.grid(column= 2, row= 1)
 
 Botao_pesquisa = tk.Button(janela, command = pesquisar)
 Botao_pesquisa.grid(column= 3, row =1)
+
+Botao_cadastro = tk.Button(janela, text="Cadastrar", command= lambda: cadastro("filme",banco))
+Botao_cadastro.grid(column=2, row= 2)
 
 
 

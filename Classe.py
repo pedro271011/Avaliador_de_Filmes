@@ -4,35 +4,81 @@ import tkinter as tk
 from tkinter import messagebox
 
 class Usuario:
-    def __init__(self, nome, email, filmesAssistidos):
+    def __init__(self, nome, filmesAssistidos):
         self.nome = nome
-        self.email = email
         self.filmesAssistidos = filmesAssistidos
 
-class BancoDeDados:
+    def para_dicionario(self):
+        return {"nome": self.nome, "filmesAssistidos": self.filmesAssistidos}
 
-    def __init__(self):
-        self.dados = []
-        self.carregar()
-
-
-    def salvar(self, novo):
-
-        self.dados.append(novo) 
-
-        with open('Banco_de_Filmes.json', 'w') as file:
-            json.dump([filme.para_dicionario() for filme in self.dados], file, indent = 4)
-
-    def carregar(self):
-
-        try: 
-            with open('Banco_de_filmes.json', 'r') as file:
-                dicionario_filmes = json.load(file)   
-                self.dados = [Filme.para_objeto(filme) for filme in dicionario_filmes]  
-
-        except FileNotFoundError:
-            self.dados = []  
+    @classmethod
+    def para_objeto(cls, data):
+        return cls(data["nome"], data["filmesAssistidos"])
     
+    @classmethod
+    def verificacao(cls):
+
+        janela_verificacao = tk.Tk()
+
+        tk.Label(janela_verificacao, text="Nome:").grid(column=0, row=0, padx=10, pady=5, sticky="w")
+        campo_nome = tk.Entry(janela_verificacao, width=30)
+        campo_nome.grid(column=1, row=0, padx=10, pady=5)
+
+        nome_inserido = campo_nome.get()
+        
+        nome = next((usuario for usuario in banco_de_Usuarios.usuarios if usuario == nome_inserido), None)
+
+        if nome is None:
+                        
+                messagebox.showinfo("Não encotrado", "Esse nome de Usuario não existe")
+                        
+        else:
+                messagebox.showinfo("Entrando", "Entrando...")
+
+
+        janela_verificacao.mainloop()
+
+
+class BancoDeDados:
+    def __init__(self):
+        self.usuarios = []
+        self.filmes = []
+        self.carregar("usuario")
+        self.carregar("filme")
+
+    def salvar(self, novo, tipo):
+        if tipo == "usuario":
+            banco_tipo = "Banco_de_Usuarios.json"
+            self.usuarios.append(novo)
+            dados_para_salvar = [usuario.para_dicionario() for usuario in self.usuarios]
+
+        elif tipo == "filme":
+            banco_tipo = "Banco_de_Filmes.json"
+            self.filmes.append(novo)
+            dados_para_salvar = [filme.para_dicionario() for filme in self.filmes]
+
+        with open(banco_tipo, 'w') as file:
+            json.dump(dados_para_salvar, file, indent=4)
+
+    def carregar(self, tipo):
+        if tipo == "usuario":
+            banco_tipo = "Banco_de_Usuarios.json"
+            try:
+                with open(banco_tipo, 'r') as file:
+                    dicionario_usuarios = json.load(file)
+                    self.usuarios = [Usuario.para_objeto(usuario) for usuario in dicionario_usuarios]
+            except FileNotFoundError:
+                self.usuarios = []
+
+        elif tipo == "filme":
+            banco_tipo = "Banco_de_Filmes.json"
+            try:
+                with open(banco_tipo, 'r') as file:
+                    dicionario_filmes = json.load(file)
+                    self.filmes = [Filme.para_objeto(filme) for filme in dicionario_filmes]
+            except FileNotFoundError:
+                self.filmes = []
+        
     
 
 class Filme:

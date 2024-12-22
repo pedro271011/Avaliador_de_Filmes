@@ -15,13 +15,18 @@
         "nota": 3.5
     },
     {
-        "nome": "A vida",
-        "ano": "2003",
-        "nota": 2.8
-    },
-    {
         "nome": "Duna",
         "ano": "2024",
         "nota": 1.0
+    },
+    {
+        "nome": "A vida",
+        "ano": "2003",
+        "nota": 3.5
+    },
+    {
+        "nome": "Vingadores",
+        "ano": 2011,
+        "nota": 3.0
     }
 ]
