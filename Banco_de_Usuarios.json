@@ -1,6 +1,10 @@
 [
     {
         "nome": "Fulano",
-        "filmesAssistidos": 0
+        "filmesAssistidos": []
+    },
+    {
+        "nome": "Ciclano",
+        "filmesAssistidos": []
     }
 ]

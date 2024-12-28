@@ -16,25 +16,30 @@ class Usuario:
         return cls(data["nome"], data["filmesAssistidos"])
     
     @classmethod
-    def verificacao(cls):
+    def verificacao(cls, banco_de_usuarios):
 
-        janela_verificacao = tk.Tk()
+        def processar_entrada():
+            
+            nome_inserido = campo_nome.get().strip()
+            
+            nome = next((usuario for usuario in banco_de_usuarios.usuarios if usuario.nome == nome_inserido), None)
+
+            if nome is None:
+                            
+                    messagebox.showinfo("Não encotrado", "Esse nome de Usuario não existe")
+                            
+            else:
+                    
+                    messagebox.showinfo("Entrando", f"Bem vido {nome_inserido}")
+                    janela_verificacao.destroy()
+
+        janela_verificacao = tk.Toplevel()
 
         tk.Label(janela_verificacao, text="Nome:").grid(column=0, row=0, padx=10, pady=5, sticky="w")
         campo_nome = tk.Entry(janela_verificacao, width=30)
         campo_nome.grid(column=1, row=0, padx=10, pady=5)
 
-        nome_inserido = campo_nome.get()
-        
-        nome = next((usuario for usuario in banco_de_Usuarios.usuarios if usuario == nome_inserido), None)
-
-        if nome is None:
-                        
-                messagebox.showinfo("Não encotrado", "Esse nome de Usuario não existe")
-                        
-        else:
-                messagebox.showinfo("Entrando", "Entrando...")
-
+        tk.Button(janela_verificacao, text="Entrar",command=processar_entrada).grid(column=1, row=1)
 
         janela_verificacao.mainloop()
 
