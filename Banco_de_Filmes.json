@@ -2,31 +2,36 @@
     {
         "nome": "Filme 1",
         "ano": 2024,
-        "nota": 1
-    },
-    {
-        "nome": "Filme 2",
-        "ano": 2023,
-        "nota": 3
-    },
-    {
-        "nome": "Batmam",
-        "ano": "2005",
-        "nota": 3.5
+        "nota": 1,
+        "qtdAvaliacoes": 0,
+        "poster": "Caminho_poster"
     },
     {
         "nome": "Duna",
-        "ano": "2024",
-        "nota": 1.0
+        "ano": 2020,
+        "nota": 3.0,
+        "qtdAvaliacoes": 0,
+        "poster": "Caminho_poster"
     },
     {
-        "nome": "A vida",
-        "ano": "2003",
-        "nota": 3.5
+        "nome": "Duna 2",
+        "ano": 2023,
+        "nota": 4.0,
+        "qtdAvaliacoes": 0,
+        "poster": "Caminho_poster"
     },
     {
-        "nome": "Vingadores",
-        "ano": 2011,
-        "nota": 3.0
+        "nome": "Dune",
+        "ano": 2023,
+        "nota": 4.0,
+        "qtdAvaliacoes": 0,
+        "poster": "Caminho_poster"
+    },
+    {
+        "nome": "Inception",
+        "ano": 2010,
+        "nota": 4.0,
+        "qtdAvaliacoes": 0,
+        "poster": "Caminho_poster"
     }
 ]

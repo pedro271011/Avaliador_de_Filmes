@@ -2,6 +2,9 @@ from subprocess import Popen
 import json
 import tkinter as tk
 from tkinter import messagebox
+from PIL import Image, ImageTk
+import requests
+from io import BytesIO
 
 class Usuario:
     def __init__(self, nome, filmesAssistidos):
@@ -88,12 +91,12 @@ class BancoDeDados:
     
 
 class Filme:
-    def __init__(self, nome, ano, nota):
+    def __init__(self, nome, ano, nota, qtdAvalaiacoes = 0, poster= "Caminho_poster"):
         self.nome = nome
         self.ano = ano 
         self.nota = nota
-        self.qtdAvaliacoes = 0
-
+        self.qtdAvaliacoes = qtdAvalaiacoes
+        self.poster = poster
     def __eq__(self, other):
 
         if isinstance(other, str):
@@ -102,35 +105,32 @@ class Filme:
         
         return False
     
+    @staticmethod
+    def encontrar_poster(nome):
+         
+          busca = f"https://api.themoviedb.org/3/search/movie?api_key=dc1dffa08f0aca6d03c2e75d3c25de0a&query={nome}"
+          resposta_Api = requests.get(busca)
+
+          if resposta_Api.status_code == 200:
+            resultados = resposta_Api.json().get('results', [])
+
+            if resultados:
+                filme = resultados[0] 
+                poster_path = filme.get("poster_path")
+                if poster_path:
+                    return "https://image.tmdb.org/t/p/w500" + poster_path
+            
+            return None
+    
     def para_dicionario(self):
-        return{"nome": self.nome,"ano": self.ano,"nota": self.nota}
+        return{"nome": self.nome,"ano": self.ano,"nota": self.nota, "qtdAvaliacoes": self.qtdAvaliacoes, "poster": self.poster}
     
     @classmethod
     def para_objeto(cls, data):
-        return cls(data["nome"], data["ano"], data["nota"])
+        return cls(data["nome"], data["ano"], data["nota"], data["qtdAvaliacoes"], data["poster"])
 
     def exibir(self):
 
-        
-        janela_filme = tk.Toplevel()
-        janela_filme.title(f'{self.nome}')
-
-        nome = tk.Label(janela_filme, text=f'Nome: {self.nome}')
-        nome.grid(column=1, row=2)
-
-        ano = tk.Label(janela_filme,text= f'Ano: {self.ano}')
-        ano.grid(column=1, row=3)
-
-        nota = tk.Label(janela_filme,text= f'Nota: {self.nota}')
-        nota.grid(column=1, row =4)
-
-        Botao_avaliar = tk.Button(janela_filme, text='Avaliar', command= lambda: avaliar(janela_filme))
-        Botao_avaliar.grid(column=1, row=5)
-
-        Botao_voltar = tk.Button(janela_filme, text ='Voltar',command = janela_filme.destroy)
-        Botao_voltar.grid(column=4, row=9)
-
-        janela_filme.mainloop()
 
         def avaliar(janela_filme):
                 
@@ -187,6 +187,44 @@ class Filme:
                                 messagebox.showerror("A nota precisa ser um número")
 
                 return
+        
+
+        janela_filme = tk.Toplevel()
+        janela_filme.title(f'{self.nome}')
+
+        nome = tk.Label(janela_filme, text=f'Nome: {self.nome}')
+        nome.grid(column=1, row=2)
+
+        ano = tk.Label(janela_filme,text= f'Ano: {self.ano}')
+        ano.grid(column=1, row=3)
+
+        nota = tk.Label(janela_filme,text= f'Nota: {self.nota}')
+        nota.grid(column=1, row =4)
+
+        Botao_avaliar = tk.Button(janela_filme, text='Avaliar', command= lambda: avaliar(janela_filme))
+        Botao_avaliar.grid(column=1, row=6)
+
+        Caminho_do_poster = Filme.encontrar_poster(self.nome)
+
+        if Caminho_do_poster:
+            resposta = requests.get(Caminho_do_poster)
+            if resposta.status_code == 200:
+                imagem = Image.open(BytesIO(resposta.content))
+                poster_tk = ImageTk.PhotoImage(imagem)
+
+                area_do_poster = tk.Canvas(janela_filme, width=500, height=700)
+                area_do_poster.grid(column=1, row=5)
+                area_do_poster.create_image(250, 350, image=poster_tk)
+                area_do_poster.image = poster_tk
+
+        else:
+
+            tk.Label(janela_filme, text= "Poster nao encontrado").grid(column=1, row=5)
+
+        Botao_voltar = tk.Button(janela_filme, text ='Voltar',command = janela_filme.destroy)
+        Botao_voltar.grid(column=4, row=9)
+
+        janela_filme.mainloop()
 
         
                         
