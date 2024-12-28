@@ -99,13 +99,13 @@ janela_login = tk.Tk()
 orientacao = tk.Label(janela_login, text= "Seja bem vindo!")
 orientacao.grid(column=2, row= 2)
 
-botao_entrar = tk.Button(janela_login, text= "Entrar", command=lambda: Usuario.verificacao(banco_de_usuarios))
+botao_entrar = tk.Button(janela_login, text= "Entrar", command=lambda: Usuario.verificacao(banco_de_usuarios, janela_login))
 botao_entrar.grid(column=2, row=4)
 
 botao_registro = tk.Button(janela_login, text= "criar nova conta", command=lambda: cadastro("usuario", banco_de_usuarios))
 botao_registro.grid(column=2, row= 6)
 
-janela_login.mainloop
+janela_login.mainloop()
 
 
 janela = tk.Tk()

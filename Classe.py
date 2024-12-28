@@ -16,7 +16,7 @@ class Usuario:
         return cls(data["nome"], data["filmesAssistidos"])
     
     @classmethod
-    def verificacao(cls, banco_de_usuarios):
+    def verificacao(cls, banco_de_usuarios,janela_login):
 
         def processar_entrada():
             
@@ -32,6 +32,7 @@ class Usuario:
                     
                     messagebox.showinfo("Entrando", f"Bem vido {nome_inserido}")
                     janela_verificacao.destroy()
+                    janela_login.destroy()
 
         janela_verificacao = tk.Toplevel()
 
@@ -110,7 +111,6 @@ class Filme:
 
     def exibir(self):
 
-
         
         janela_filme = tk.Toplevel()
         janela_filme.title(f'{self.nome}')
@@ -130,7 +130,7 @@ class Filme:
         Botao_voltar = tk.Button(janela_filme, text ='Voltar',command = janela_filme.destroy)
         Botao_voltar.grid(column=4, row=9)
 
-        janela_filme.mainloop
+        janela_filme.mainloop()
 
         def avaliar(janela_filme):
                 
@@ -147,10 +147,9 @@ class Filme:
                 def verificacao():
 
                             notau = campo_avaliacao.get()
-                            instrucao1.destroy
-                            campo_avaliacao.destroy
-                            Botao_confirmar.destroy
-                        
+                            instrucao1.destroy()
+                            campo_avaliacao.destroy()
+                            Botao_confirmar.destroy()
 
                             try:
 
