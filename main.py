@@ -23,6 +23,8 @@ def cadastro(tipo, banco):
 
             messagebox.showinfo("Sucesso", "Usuário cadastrado!")
             janela_cadastro.destroy()
+            janela_login.withdraw()
+            janela.deiconify()
 
         elif tipo == "filme":
             nome = campo_nome.get().strip()
@@ -80,10 +82,10 @@ def pesquisar():
 
         if pesquisa.lower() == 'sair':
                 
-                texto_encerramento = tk.Label(janela, text = "Programa encerrado")
-                texto_encerramento.grid(column= 2, row = 3)
-                exit()
+                messagebox.showinfo("Saindo","Programa encerrado")
+                encerrar()
 
+                return
 
         procura = next((filme for filme in banco.filmes if filme == pesquisa), None)
 
@@ -92,23 +94,29 @@ def pesquisar():
                 messagebox.showinfo("Não encotrado", "O filme não foi encontrado. Cadastre esse filme!")
                         
         else:
-                procura.exibir()
+                procura.exibir(janela)
 
 janela_login = tk.Tk()
+janela = tk.Toplevel()
+
+def encerrar():
+     
+     janela.destroy()
+     janela_login.destroy()
+
+janela.protocol("WM_DELETE_WINDOW", encerrar)
 
 orientacao = tk.Label(janela_login, text= "Seja bem vindo!")
 orientacao.grid(column=2, row= 2)
 
-botao_entrar = tk.Button(janela_login, text= "Entrar", command=lambda: Usuario.verificacao(banco_de_usuarios, janela_login))
+botao_entrar = tk.Button(janela_login, text= "Entrar", command=lambda: Usuario.verificacao(banco_de_usuarios, janela_login,janela))
 botao_entrar.grid(column=2, row=4)
 
 botao_registro = tk.Button(janela_login, text= "criar nova conta", command=lambda: cadastro("usuario", banco_de_usuarios))
 botao_registro.grid(column=2, row= 6)
 
-janela_login.mainloop()
 
-
-janela = tk.Tk()
+janela.withdraw()
 
 texto_orientacao = tk.Label(janela, text = "Qual filme vc esta procurando?")
 texto_orientacao.grid(column = 2, row = 0)
@@ -116,12 +124,13 @@ texto_orientacao.grid(column = 2, row = 0)
 campo_pesquisa = tk.Entry(janela, width = 30)
 campo_pesquisa.grid(column= 2, row= 1)
 
-Botao_pesquisa = tk.Button(janela, command = pesquisar)
+Botao_pesquisa = tk.Button(janela,text="Pesquisar", command = pesquisar)
 Botao_pesquisa.grid(column= 3, row =1)
 
-Botao_cadastro = tk.Button(janela, text="Cadastrar", command= lambda: cadastro("filme",banco))
+Botao_cadastro = tk.Button(janela, text="Cadastrar novo filme", command= lambda: cadastro("filme",banco))
 Botao_cadastro.grid(column=2, row= 2)
 
 
+janela_login.mainloop()
 
-janela.mainloop()
+

@@ -19,7 +19,7 @@ class Usuario:
         return cls(data["nome"], data["filmesAssistidos"])
     
     @classmethod
-    def verificacao(cls, banco_de_usuarios,janela_login):
+    def verificacao(cls, banco_de_usuarios,janela_login,janela):
 
         def processar_entrada():
             
@@ -35,7 +35,8 @@ class Usuario:
                     
                     messagebox.showinfo("Entrando", f"Bem vido {nome_inserido}")
                     janela_verificacao.destroy()
-                    janela_login.destroy()
+                    janela_login.withdraw()
+                    janela.deiconify()
 
         janela_verificacao = tk.Toplevel()
 
@@ -91,11 +92,11 @@ class BancoDeDados:
     
 
 class Filme:
-    def __init__(self, nome, ano, nota, qtdAvalaiacoes = 0, poster= "Caminho_poster"):
+    def __init__(self, nome, ano, nota, qtdAvaliacoes = 1, poster= "Caminho_poster"):
         self.nome = nome
         self.ano = ano 
         self.nota = nota
-        self.qtdAvaliacoes = qtdAvalaiacoes
+        self.qtdAvaliacoes = qtdAvaliacoes
         self.poster = poster
     def __eq__(self, other):
 
@@ -129,19 +130,20 @@ class Filme:
     def para_objeto(cls, data):
         return cls(data["nome"], data["ano"], data["nota"], data["qtdAvaliacoes"], data["poster"])
 
-    def exibir(self):
+    def exibir(self,janela):
 
+        janela.withdraw()
 
         def avaliar(janela_filme):
                 
                 instrucao1 = tk.Label(janela_filme, text ="Escolha uma nota entre 0 e 5")
-                instrucao1.grid(column=1, row=6)
+                instrucao1.grid(column=1, row=7)
 
                 campo_avaliacao = tk.Entry(janela_filme, width=25)
-                campo_avaliacao.grid(column=1, row = 7)
+                campo_avaliacao.grid(column=1, row = 8)
 
                 Botao_confirmar = tk.Button(janela_filme, text="Confirmar", command=lambda: verificacao())
-                Botao_confirmar.grid(column=1, row =8)
+                Botao_confirmar.grid(column=1, row =9)
                
 
                 def verificacao():
@@ -174,7 +176,7 @@ class Filme:
                                         lista = json.load(file)
 
                                     novo_banco = [filme for filme in lista if filme["nome"] != self.nome]
-                                    novo_banco.append({"nome": self.nome, "ano": self.ano, "nota": self.nota})
+                                    novo_banco.append({"nome": self.nome, "ano": self.ano, "nota": self.nota, "qtdAvaliacoes": self.qtdAvaliacoes, "poster": self.poster})
 
                                     with open("Banco_de_Filmes.json", 'w') as file:
                                         json.dump(novo_banco, file, indent = 4)
@@ -188,9 +190,15 @@ class Filme:
 
                 return
         
+        def voltar():
+        
+            janela_filme.destroy()
+            janela.deiconify()
 
         janela_filme = tk.Toplevel()
         janela_filme.title(f'{self.nome}')
+
+        janela_filme.protocol("WM_DELETE_WINDOW", voltar)
 
         nome = tk.Label(janela_filme, text=f'Nome: {self.nome}')
         nome.grid(column=1, row=2)
@@ -210,19 +218,23 @@ class Filme:
             resposta = requests.get(Caminho_do_poster)
             if resposta.status_code == 200:
                 imagem = Image.open(BytesIO(resposta.content))
+                imagem = imagem.resize((300, 450), Image.Resampling.LANCZOS) 
+
                 poster_tk = ImageTk.PhotoImage(imagem)
 
-                area_do_poster = tk.Canvas(janela_filme, width=500, height=700)
+                area_do_poster = tk.Canvas(janela_filme, width=300, height=450)
                 area_do_poster.grid(column=1, row=5)
-                area_do_poster.create_image(250, 350, image=poster_tk)
+                area_do_poster.create_image(150, 225, image=poster_tk)
                 area_do_poster.image = poster_tk
 
         else:
 
             tk.Label(janela_filme, text= "Poster nao encontrado").grid(column=1, row=5)
 
-        Botao_voltar = tk.Button(janela_filme, text ='Voltar',command = janela_filme.destroy)
+
+        Botao_voltar = tk.Button(janela_filme, text ='Voltar',command = voltar)
         Botao_voltar.grid(column=4, row=9)
+        
 
         janela_filme.mainloop()
 

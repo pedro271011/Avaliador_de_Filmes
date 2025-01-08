@@ -33,5 +33,12 @@
         "nota": 4.0,
         "qtdAvaliacoes": 0,
         "poster": "Caminho_poster"
+    },
+    {
+        "nome": "Close",
+        "ano": 2023,
+        "nota": 3.6666666666666665,
+        "qtdAvaliacoes": 3,
+        "poster": "Caminho_poster"
     }
 ]
